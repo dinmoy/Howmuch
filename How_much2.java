@@ -5,10 +5,15 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import javax.swing.AbstractButton;
-import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -19,58 +24,20 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 
-class Client{
-	String date;
-	String ways;
-	String category;
-	String uselist;
-	String price;
 
-	public Client(String date, String ways, String category, String uselist,String price) {
-		this.date=date;
-		this.ways=ways;
-		this.category=category;
-		this.uselist=uselist;
-		this.price=price;
-	}
-	public Client() {
-
-	}
-	public String getdate() {
-		return date;
-	}
-	public void setId(String date) {
-		this.date=date;
-	}
-	public String getways() {
-		return ways;
-	}
-	public void setways(String ways) {
-		this.ways=ways;
-	}
-	public String getcategory() {
-		return category;
-	}
-	public void setcategory(String category) {
-		this.category=category;
-	}
-	public String getuselist() {
-		return uselist;
-	}
-	public void setuselist(String uselist) {
-		this.uselist=uselist;
-	}
-	public String getprice() {
-		return price;
-	}
-	public void setprice(String price) {
-		this.price=price;
-	}
-}
 public class How_much2 extends CommonFrame {
 	protected static final AbstractButton IDtxttfield = null;
+
+	protected static final String SEARCH_NONE = null;
+
+	private static final String DRIVER = null;
+
+	private static final String URL = null;
+
+	private static final String USER = null;
+
+	private static final String PASS = null;
 
 	JFrame mainFrame = new JFrame("Howmuch");
 
@@ -263,6 +230,8 @@ public class How_much2 extends CommonFrame {
 		secondFrame.add(Purchase_history);
 		secondFrame.add(Price);
 
+
+
 		// 컴퓨터 날짜
 		LocalDate now = LocalDate.now();
 		int year = now.getYear();
@@ -274,15 +243,14 @@ public class How_much2 extends CommonFrame {
 
 		// 카테고리 콤보
 		String[] header = { "날짜", "결제수단", "카테고리", "사용내역", "가격" };
-		String[][] contents = { { "", "", "", "", "" } };
+		String[][] contents = Database.getCustumers();
 
 		DefaultTableModel model = new DefaultTableModel(contents, header);
 		JTable table = new JTable(model);
 		JScrollPane scrollpane = new JScrollPane(table);
+		
 
-		// 스크롤바
-		scrollpane.setLocation(265, 250);
-		scrollpane.setSize(550, 300);
+		secondFrame.add(table);
 
 		// 버튼
 		Plus.setBounds(650, 220, 70, 20);
@@ -291,12 +259,18 @@ public class How_much2 extends CommonFrame {
 		input.setBounds(20, 100, 200, 40);
 		statistics.setBounds(20, 300, 200, 40);
 
+
 		Plus.addActionListener(new ActionListener() {
 
 			// 테이블
 			@Override
 			public void actionPerformed(ActionEvent e) {
+
+
 				try {
+					Connection con=(Connection) getConnection();
+					PreparedStatement statement=con.prepareStatement("select * from info");
+					ResultSet results=statement.executeQuery();
 
 					updateSQL("INSERT INTO info(i_date,i_way,i_category,i_uselist,i_price) "
 							+ "VALUES (?,?,?,?,?)",
@@ -314,11 +288,9 @@ public class How_much2 extends CommonFrame {
 					Instr[4]=Price.getText();
 					model.addRow(Instr);
 
-
-
 					System.out.println("info에 저장 성공");
-
-				}catch(Exception ex) { 
+				}
+				catch(Exception ex) { 
 					JOptionPane.showMessageDialog(null,"info에 실패하였습니다"); }
 			}
 		});
@@ -348,10 +320,6 @@ public class How_much2 extends CommonFrame {
 
 		});
 
-		// });
-
-
-
 		secondFrame.add(scrollpane, BorderLayout.CENTER);
 		secondFrame.add(Plus);
 		secondFrame.add(Minus);
@@ -377,6 +345,7 @@ public class How_much2 extends CommonFrame {
 
 	}
 	//--------------------------------------------------------------------------------여기까지가 가게부 입력창
+
 	JFrame joinFrame = new JFrame("Join");
 
 	public void joinFrame() {
@@ -461,7 +430,10 @@ public class How_much2 extends CommonFrame {
 	// 통계화면
 	JFrame staticFrame = new JFrame("static");
 
+
 	public void staticFrame() {
+
+
 		ImagePanel sidePanel = new ImagePanel(new ImageIcon("./image/join.png").getImage());
 		staticFrame.add(sidePanel);
 		staticFrame.pack();
@@ -477,6 +449,30 @@ public class How_much2 extends CommonFrame {
 		staticFrame.setResizable(false);
 	}
 
+	public String[][] getCustomers(){
+		try {
+			Connection con=(Connection) getConnection();
+			PreparedStatement statement=con.prepareStatement("select * from info");
+			ResultSet results=statement.executeQuery();
+			ArrayList<String[]>list=new ArrayList<String[]>();
+			while(results.next()) {
+				list.add(new String[] {
+						Date.getText(),
+						method_of_payment.getText(),
+						category.getText(),
+						Purchase_history.getText(),
+						Price.getText()
+				});	
+			}
+			System.out.println("Good");
+			String[][] arr=new String[list.size()][5];
+			return list.toArray(arr);
+
+		}catch(Exception e){
+			System.out.println("Bad");
+			return null;
+		}
+	}
 	public static void main(String[] args) {
 		new How_much2();
 	}
