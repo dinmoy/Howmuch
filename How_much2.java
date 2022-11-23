@@ -5,9 +5,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDate;
 
 import javax.swing.AbstractButton;
@@ -24,8 +21,54 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
-import com.mysql.cj.jdbc.ClientPreparedStatement;
+class Client{
+	String date;
+	String ways;
+	String category;
+	String uselist;
+	String price;
 
+	public Client(String date, String ways, String category, String uselist,String price) {
+		this.date=date;
+		this.ways=ways;
+		this.category=category;
+		this.uselist=uselist;
+		this.price=price;
+	}
+	public Client() {
+
+	}
+	public String getdate() {
+		return date;
+	}
+	public void setId(String date) {
+		this.date=date;
+	}
+	public String getways() {
+		return ways;
+	}
+	public void setways(String ways) {
+		this.ways=ways;
+	}
+	public String getcategory() {
+		return category;
+	}
+	public void setcategory(String category) {
+		this.category=category;
+	}
+	public String getuselist() {
+		return uselist;
+	}
+	public void setuselist(String uselist) {
+		this.uselist=uselist;
+	}
+	public String getprice() {
+		return price;
+	}
+	public void setprice(String price) {
+		this.price=price;
+	}
+}
 public class How_much2 extends CommonFrame {
 	protected static final AbstractButton IDtxttfield = null;
 
@@ -46,6 +89,11 @@ public class How_much2 extends CommonFrame {
 	// second
 	JButton Plus = new JButton(new ImageIcon("./image/addbtn.png"));
 	JButton Minus = new JButton(new ImageIcon("./image/delbtn.png"));
+	JLabel date=new JLabel("날짜");
+	JLabel way=new JLabel("결제수단");
+	JLabel categorye=new JLabel("카테고리");
+	JLabel uselist=new JLabel("사용내역");
+	JLabel price=new JLabel("비용");
 	JTextField Date = new JTextField();
 	JTextField method_of_payment = new JTextField();
 	JTextField category = new JTextField();
@@ -55,9 +103,9 @@ public class How_much2 extends CommonFrame {
 	// join
 	JButton new_join = new JButton("Join");
 	JButton cancel = new JButton("Cancel");
-	JButton input = new JButton("input");
-	JButton view = new JButton("view");
-	JButton statistics = new JButton("statistics");
+	JButton input = new JButton(new ImageIcon("./image/001.png"));
+	//JButton view = new JButton();
+	JButton statistics = new JButton(new ImageIcon("./image/002.png"));
 	JTextField[] JointextField = new JTextField[5];
 	JLabel[] Joinlabel = new JLabel[5];
 
@@ -102,31 +150,33 @@ public class How_much2 extends CommonFrame {
 				String ID = IDtxtfield.getText();
 				String PW = PWtxtfield.getText();
 
-				String sql_query = String.format("SELECT *FROM shopingdb.user WHERE u_id = '%s' AND u_pw ='%s'",ID, PW);
-				
-				
+				String sql = "SELECT u_pw FROM shopingdb.user WHERE u_id = ?";
+
 				try {
-					ResultSet rset=stmt.executeQuery(sql_query);
-					while(rset.next()) {
-						
-						ID = IDtxtfield.getText();
-						PW = PWtxtfield.getText();
-						
-						if(ID.equals(rset.getString(3))|| PW.equals(rset.getString(4))) {
-							JOptionPane.showMessageDialog(null, "Login Success.");
+					var pstmt1 = con.prepareStatement(sql);
+					pstmt1.setString(1, ID);
+
+					var rs = pstmt1.executeQuery();
+
+					if(rs.next()) {
+						if(rs.getString(1).equals(PW)) {
+							//로그인 성공
+							JOptionPane.showMessageDialog(null,"로그인 성공!");
 							mainFrame.setVisible(false);
 							secondFrame();
-						}else {
-							JOptionPane.showMessageDialog(null, "Login Failure.");			
+						} else { //로그인 비밀번호 불일치
+							JOptionPane.showMessageDialog(null,"비밀번호 불일치!");
+
 						}
+					} else {
+						//아이디 없음
+						JOptionPane.showMessageDialog(null,"아이디나 비밀번호를 다시 확인해주세요!");
 					}
-				}catch (SQLException ex) {
-					// TODO Auto-generated catch block
-					JOptionPane.showMessageDialog(null, "로그인 실패");
-					System.out.println("SQLException"+ex);
+				} catch(Exception e1) {
+					e1.printStackTrace();
 				}
 			}
-	});
+		});
 		// join버튼 누를 시 행동
 		Join.addActionListener(new ActionListener() {
 
@@ -152,256 +202,282 @@ public class How_much2 extends CommonFrame {
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// 화면 사이즈,위치 고정
 		mainFrame.setResizable(false);
-}
+	}
 
-JFrame secondFrame = new JFrame("Howmuch");
+	protected static Object getConnection() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	//--------------------------------------------------------------------------여기까지가 메인화면(로그인창)
 
-public void secondFrame() {
-	Dimension dim = new Dimension(840, 600);
-	secondFrame.setLocation(200, 400);
-	secondFrame.setPreferredSize(dim);
+	JFrame secondFrame = new JFrame("Howmuch");
 
-	// 컴퓨터 날짜
-	LocalDate now = LocalDate.now();
-	int year = now.getYear();
-	int month = now.getMonthValue();
-	JLabel label = new JLabel(year + " " + month);
-	label.setBounds(450, 0, 200, 150);
-	label.setFont(new Font("굴림", Font.BOLD, 50));
-	secondFrame.add(label);
 
-	// 카테고리 콤보
-	String[] header = { "날짜", "결제수단", "카테고리", "사용내역", "가격" };
-	String[][] contents = { { "", "", "", "", "" } };
+	public void secondFrame() {
 
-	DefaultTableModel model = new DefaultTableModel(contents, header);
-	JTable table = new JTable(model);
-	JScrollPane scrollpane = new JScrollPane(table);
+		Dimension dim = new Dimension(840, 600);
+		secondFrame.setLocation(200, 400);
+		secondFrame.setPreferredSize(dim);
 
-	// 스크롤바
-	scrollpane.setLocation(265, 250);
-	scrollpane.setSize(550, 300);
+		String[] comboBox1= new String[]{"교통비","식비","여가생활","저축","의류","기타"};
+		JComboBox combo1=new JComboBox(comboBox1);
 
-	// 테이블 내용
-	Date.setFont(new Font("굴림", Font.BOLD, 15));
-	Date.setBounds(330, 430, 50, 25);
+		String[] comboBox2= {"카드","현금"};
+		JComboBox combo2=new JComboBox(comboBox2);
 
-	method_of_payment.setFont(new Font("굴림", Font.BOLD, 15));
-	method_of_payment.setBounds(330, 480, 50, 25);
+		date.setFont(new Font("굴림", Font.BOLD, 14));
+		date.setBounds(280,130,50,50);
+		way.setFont(new Font("굴림", Font.BOLD, 14));
+		way.setBounds(480,130,80,50);
+		categorye.setFont(new Font("굴림", Font.BOLD, 14));
+		categorye.setBounds(280,170,80,50);
+		uselist.setFont(new Font("굴림", Font.BOLD, 14));
+		uselist.setBounds(480,170,80,50);
+		price.setFont(new Font("굴림", Font.BOLD, 14));
+		price.setBounds(680,170,50,50);
 
-	category.setFont(new Font("굴림", Font.BOLD, 15));
-	category.setBounds(330, 530, 50, 25);
+		Date.setFont(new Font("굴림", Font.BOLD, 15));
+		Date.setBounds(350, 140, 120, 25);
 
-	Purchase_history.setFont(new Font("굴림", Font.BOLD, 15));
-	Purchase_history.setBounds(330, 580, 50, 25);
+		combo2.setFont(new Font("굴림", Font.BOLD, 15));
+		combo2.setBounds(550, 140, 100, 25);
 
-	Price.setFont(new Font("굴림", Font.BOLD, 15));
-	Price.setBounds(330, 630, 50, 25);
+		combo1.setFont(new Font("굴림", Font.BOLD, 15));
+		combo1.setBounds(350, 180, 120, 25);
 
-	// 콤보박스 만들기
-	TableColumn comm = table.getColumnModel().getColumn(2);
-	JComboBox Category = new JComboBox();
+		Purchase_history.setFont(new Font("굴림", Font.BOLD, 15));
+		Purchase_history.setBounds(550, 180, 120, 25);
 
-	Category.addItem("교통비");
-	Category.addItem("식비");
-	Category.addItem("의류");
-	Category.addItem("문화생활");
-	Category.addItem("저축");
-	Category.addItem("기타");
-	comm.setCellEditor(new DefaultCellEditor(Category));
+		Price.setFont(new Font("굴림", Font.BOLD, 15));
+		Price.setBounds(730, 180, 80, 25);
 
-	// 콤보박스 만들기
-	TableColumn comm2 = table.getColumnModel().getColumn(1);
-	JComboBox Category2 = new JComboBox();
+		secondFrame.add(date);
+		secondFrame.add(way);
+		secondFrame.add(categorye);
+		secondFrame.add(uselist);
+		secondFrame.add(price);
 
-	Category2.addItem("카드");
-	Category2.addItem("현금");
-	comm2.setCellEditor(new DefaultCellEditor(Category2));
+		secondFrame.add(Date);
+		secondFrame.add(combo2);
+		secondFrame.add(combo1);
+		secondFrame.add(Purchase_history);
+		secondFrame.add(Price);
 
-	// 버튼
-	Plus.setBounds(650, 120, 70, 20);
-	Minus.setBounds(740, 120, 70, 20);
+		// 컴퓨터 날짜
+		LocalDate now = LocalDate.now();
+		int year = now.getYear();
+		int month = now.getMonthValue();
+		JLabel label = new JLabel(year + " " + month);
+		label.setBounds(450, 0, 200, 150);
+		label.setFont(new Font("굴림", Font.BOLD, 50));
+		secondFrame.add(label);
 
-	input.setBounds(20, 100, 200, 40);
-	view.setBounds(20, 200, 200, 40);
-	statistics.setBounds(20, 300, 200, 40);
+		// 카테고리 콤보
+		String[] header = { "날짜", "결제수단", "카테고리", "사용내역", "가격" };
+		String[][] contents = { { "", "", "", "", "" } };
 
-	Plus.addActionListener(new ActionListener() {
+		DefaultTableModel model = new DefaultTableModel(contents, header);
+		JTable table = new JTable(model);
+		JScrollPane scrollpane = new JScrollPane(table);
 
-		// 테이블
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
-			String inputStr[] = new String[5];
+		// 스크롤바
+		scrollpane.setLocation(265, 250);
+		scrollpane.setSize(550, 300);
 
-			inputStr[0] = Date.getText();
-			inputStr[1] = method_of_payment.getText();
-			inputStr[2] = category.getText();
-			inputStr[3] = Purchase_history.getText();
-			inputStr[4] = Price.getText();
+		// 버튼
+		Plus.setBounds(650, 220, 70, 20);
+		Minus.setBounds(740, 220, 70, 20);
 
-			model.addRow(inputStr);
+		input.setBounds(20, 100, 200, 40);
+		statistics.setBounds(20, 300, 200, 40);
 
-			Date.setText("");
-			method_of_payment.setText("");
-			category.setText("");
-			Purchase_history.setText("");
-			Price.setText("");
-		}
-	});
+		Plus.addActionListener(new ActionListener() {
 
-	// del 버튼
-	Minus.addActionListener(new ActionListener() {
+			// 테이블
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
 
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
-			if (table.getSelectedRow() == -1) {
-				return;
-			} else {
-				model.removeRow(table.getSelectedRow());
+					updateSQL("INSERT INTO info(i_date,i_way,i_category,i_uselist,i_price) "
+							+ "VALUES (?,?,?,?,?)",
+							Date.getText(),
+							combo2.getSelectedItem().toString(),
+							combo1.getSelectedItem().toString(),
+							Purchase_history.getText(),
+							Price.getText());
+
+					String Instr[]=new String[5];
+					Instr[0]=Date.getText();
+					Instr[1]=combo2.getSelectedItem().toString();
+					Instr[2]=combo1.getSelectedItem().toString();
+					Instr[3]=Purchase_history.getText();
+					Instr[4]=Price.getText();
+					model.addRow(Instr);
+
+
+
+					System.out.println("info에 저장 성공");
+
+				}catch(Exception ex) { 
+					JOptionPane.showMessageDialog(null,"info에 실패하였습니다"); }
 			}
+		});
+
+		// del 버튼
+		Minus.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				if (table.getSelectedRow() == -1) {
+					return;
+				} else {
+					model.removeRow(table.getSelectedRow());
+				}
+			}
+		});
+
+		statistics.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				secondFrame.setVisible(false);
+				staticFrame();
+			}
+
+		});
+
+		// });
+
+
+
+		secondFrame.add(scrollpane, BorderLayout.CENTER);
+		secondFrame.add(Plus);
+		secondFrame.add(Minus);
+		secondFrame.add(input);
+		//secondFrame.add(view);
+		secondFrame.add(statistics);
+
+		ImagePanel sidePanel1 = new ImagePanel(new ImageIcon("./image/hehe.png").getImage());
+		sidePanel1.setSize(840, 640);
+		secondFrame.add(sidePanel1);
+		secondFrame.pack();
+
+		secondFrame.setVisible(true);
+		secondFrame.setLayout(null);
+		// 프레임 보이게 하기
+		secondFrame.setSize(840, 640);
+		// 화면을 중앙에
+		secondFrame.setLocationRelativeTo(null);
+		// 화면 종료
+		secondFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		// 화면 사이즈 고정
+		secondFrame.setResizable(false);
+
+	}
+	//--------------------------------------------------------------------------------여기까지가 가게부 입력창
+	JFrame joinFrame = new JFrame("Join");
+
+	public void joinFrame() {
+
+
+		var labelList = "이름,아이디,비밀번호,비밀번호확인,이메일".split(",");
+
+		for (int i = 0; i < Joinlabel.length; i++) {
+			Joinlabel[i] = new JLabel(labelList[i]);
+			Joinlabel[i].setFont(new Font("굴림", Font.BOLD, 18));
+			Joinlabel[i].setBounds(270, 200 + i * 50, 200, 30);
+			joinFrame.add(Joinlabel[i]);
 		}
-	});
 
-	statistics.addActionListener(new ActionListener() {
 
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
-			secondFrame.setVisible(false);
-			staticFrame();
+
+		for (int i = 0; i < JointextField.length; i++) {
+			JointextField[i] = new JTextField();
+			JointextField[i].setFont(new Font("Arial Black", Font.BOLD, 15));
+			JointextField[i].setBounds(400, 200 + i * 50, 200, 30);
+			joinFrame.add(JointextField[i]);
 		}
 
-	});
+		new_join.setBounds(330, 480, 90, 30);
+		cancel.setBounds(430, 480, 90, 30);
 
-	// });
-	secondFrame.add(scrollpane, BorderLayout.CENTER);
-	secondFrame.add(Plus);
-	secondFrame.add(Minus);
-	secondFrame.add(input);
-	secondFrame.add(view);
-	secondFrame.add(statistics);
+		joinFrame.add(new_join);
+		joinFrame.add(cancel);
 
-	ImagePanel sidePanel1 = new ImagePanel(new ImageIcon("./image/hehe.png").getImage());
-	sidePanel1.setSize(840, 640);
-	secondFrame.add(sidePanel1);
-	secondFrame.pack();
+		new_join.addActionListener(new ActionListener() {
 
-	secondFrame.setVisible(true);
-	secondFrame.setLayout(null);
-	// 프레임 보이게 하기
-	secondFrame.setSize(840, 640);
-	// 화면을 중앙에
-	secondFrame.setLocationRelativeTo(null);
-	// 화면 종료
-	secondFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	// 화면 사이즈 고정
-	secondFrame.setResizable(false);
+			@Override
+			public void actionPerformed(ActionEvent T) {
+				// TODO Auto-generated method stub
 
-}
+				try {
+					updateSQL("INSERT INTO user(u_name,u_id,u_pw,u_pwCheck,u_email) "
+							+ "VALUES (?,?,?,?,?)",
+							JointextField[0].getText(),
+							JointextField[1].getText(),
+							JointextField[2].getText(),
+							JointextField[3].getText(),
+							JointextField[4].getText());
 
-// 회원가입창
-JFrame joinFrame = new JFrame("Join");
+					JOptionPane.showMessageDialog(null, "회원가입을 축하합니다!");
 
-public void joinFrame() {
+				}catch(Exception ex) { 
+					JOptionPane.showMessageDialog(null,"회원가입에 실패하였습니다"); }				
 
-	var labelList = "이름,아이디,비밀번호,비밀번호확인,이메일".split(",");
 
-	for (int i = 0; i < Joinlabel.length; i++) {
-		Joinlabel[i] = new JLabel(labelList[i]);
-		Joinlabel[i].setFont(new Font("굴림", Font.BOLD, 18));
-		Joinlabel[i].setBounds(270, 200 + i * 50, 200, 30);
-		joinFrame.add(Joinlabel[i]);
+				joinFrame.setVisible(false);
+				new How_much2();
+
+			}
+		});
+		cancel.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				joinFrame.setVisible(false);
+				new How_much2();
+			}
+
+		});
+
+		ImagePanel sidePanel = new ImagePanel(new ImageIcon("./image/join.png").getImage());
+		joinFrame.add(sidePanel);
+		joinFrame.pack();
+
+		// 프레임 보이게 하기
+		joinFrame.setVisible(true);
+		joinFrame.setSize(840, 640);
+		// 화면을 중앙에
+		joinFrame.setLocationRelativeTo(null);
+		// 화면 종료
+		joinFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		// 화면 사이즈 고정
+		joinFrame.setResizable(false);
+	}
+	//----------------------------------------------------------------------------------여기까지가 회원가입창
+	// 통계화면
+	JFrame staticFrame = new JFrame("static");
+
+	public void staticFrame() {
+		ImagePanel sidePanel = new ImagePanel(new ImageIcon("./image/join.png").getImage());
+		staticFrame.add(sidePanel);
+		staticFrame.pack();
+
+		// 프레임 보이게 하기
+		staticFrame.setVisible(true);
+		staticFrame.setSize(840, 640);
+		// 화면을 중앙에
+		staticFrame.setLocationRelativeTo(null);
+		// 화면 종료
+		staticFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		// 화면 사이즈 고정
+		staticFrame.setResizable(false);
 	}
 
-
-
-	for (int i = 0; i < JointextField.length; i++) {
-		JointextField[i] = new JTextField();
-		JointextField[i].setFont(new Font("Arial Black", Font.BOLD, 15));
-		JointextField[i].setBounds(400, 200 + i * 50, 200, 30);
-		joinFrame.add(JointextField[i]);
+	public static void main(String[] args) {
+		new How_much2();
 	}
-
-	new_join.setBounds(330, 480, 90, 30);
-	cancel.setBounds(430, 480, 90, 30);
-
-	joinFrame.add(new_join);
-	joinFrame.add(cancel);
-
-	new_join.addActionListener(new ActionListener() {
-
-		@Override
-		public void actionPerformed(ActionEvent T) {
-			// TODO Auto-generated method stub
-
-			try {
-				updateSQL("INSERT INTO user(u_name,u_id,u_pw,u_pwCheck,u_email) "
-						+ "VALUES (?,?,?,?,?)",
-						JointextField[0].getText(),
-						JointextField[1].getText(),
-						JointextField[2].getText(),
-						JointextField[3].getText(),
-						JointextField[4].getText());
-
-				JOptionPane.showMessageDialog(null, "회원가입을 축하합니다!");
-
-			}catch(Exception ex) { 
-				JOptionPane.showMessageDialog(null,"회원가입에 실패하였습니다"); }				
-
-
-			joinFrame.setVisible(false);
-			new How_much2();
-
-		}
-	});
-	cancel.addActionListener(new ActionListener() {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
-			joinFrame.setVisible(false);
-			new How_much2();
-		}
-
-	});
-
-	ImagePanel sidePanel = new ImagePanel(new ImageIcon("./image/join.png").getImage());
-	joinFrame.add(sidePanel);
-	joinFrame.pack();
-
-	// 프레임 보이게 하기
-	joinFrame.setVisible(true);
-	joinFrame.setSize(840, 640);
-	// 화면을 중앙에
-	joinFrame.setLocationRelativeTo(null);
-	// 화면 종료
-	joinFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	// 화면 사이즈 고정
-	joinFrame.setResizable(false);
-}
-
-// 통계화면
-JFrame staticFrame = new JFrame("static");
-
-public void staticFrame() {
-	ImagePanel sidePanel = new ImagePanel(new ImageIcon("./image/join.png").getImage());
-	staticFrame.add(sidePanel);
-	staticFrame.pack();
-
-	// 프레임 보이게 하기
-	staticFrame.setVisible(true);
-	staticFrame.setSize(840, 640);
-	// 화면을 중앙에
-	staticFrame.setLocationRelativeTo(null);
-	// 화면 종료
-	staticFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	// 화면 사이즈 고정
-	staticFrame.setResizable(false);
-}
-
-public static void main(String[] args) {
-	new How_much2();
-}
 }
