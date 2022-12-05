@@ -5,7 +5,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 
 import javax.swing.JPanel;
-
+//https://www.youtube.com/watch?v=QjmhiS8lw24
 //패널에 그림을 올려주는 클래스
 public class ImagePanel extends JPanel {
 	private Image img;

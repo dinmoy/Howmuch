@@ -21,7 +21,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
-
+//https://beautifulkim.tistory.com/350
 public class How_much2 extends CommonFrame {
 	protected static final AbstractButton IDtxttfield = null;
 
@@ -37,10 +37,20 @@ public class How_much2 extends CommonFrame {
 	String user;
 
 	// second
-	JButton Plus = new JButton(new ImageIcon("./image/addbtn.png"));
-	JButton Minus = new JButton(new ImageIcon("./image/delbtn.png"));
-	JButton left=new JButton(new ImageIcon("./image/Screenshot_1.png"));
-	JButton right=new JButton(new ImageIcon("./image/Screenshot_2.png"));
+	//버튼
+	JButton Plus1 = new JButton(new ImageIcon("./image/addbtn.png"));
+	JButton Minus1 = new JButton(new ImageIcon("./image/delbtn.png"));
+	JButton Plus2 = new JButton(new ImageIcon("./image/addbtn.png"));
+	JButton Minus2 = new JButton(new ImageIcon("./image/delbtn.png"));
+	JButton Plus3 = new JButton(new ImageIcon("./image/addbtn.png"));
+	JButton Minus3 = new JButton(new ImageIcon("./image/delbtn.png"));
+	JButton left1=new JButton(new ImageIcon("./image/Screenshot_1.png"));
+	JButton right1=new JButton(new ImageIcon("./image/Screenshot_2.png"));
+	JButton left2=new JButton(new ImageIcon("./image/Screenshot_1.png"));
+	JButton right2=new JButton(new ImageIcon("./image/Screenshot_2.png"));
+	JButton left3=new JButton(new ImageIcon("./image/Screenshot_1.png"));
+	JButton right3=new JButton(new ImageIcon("./image/Screenshot_2.png"));
+	//라벨
 	JLabel date=new JLabel("날짜");
 	JLabel way=new JLabel("결제수단");
 	JLabel categorye=new JLabel("카테고리");
@@ -54,33 +64,25 @@ public class How_much2 extends CommonFrame {
 	String PW;
 	DefaultTableModel model = new DefaultTableModel();
 	ResultSet rs;
+	//시계: https://intunknown.tistory.com/326
 	LocalDate now = LocalDate.now();
 	int year = now.getYear();
 	int month = now.getMonthValue();
 	int day=now.getDayOfMonth();
+	
 	// join
 	JButton new_join = new JButton("Join");
 	JButton cancel = new JButton("Cancel");
 	JButton input = new JButton(new ImageIcon("./image/001.png"));
-	//JButton view = new JButton();
-	JButton statistics = new JButton(new ImageIcon("./image/002.png"));
+	JButton statistics1 = new JButton(new ImageIcon("./image/002.png"));
+	JButton statistics2= new JButton(new ImageIcon("./image/002.png"));
+	JButton statistics3 = new JButton(new ImageIcon("./image/002.png"));
 	JTextField[] JointextField = new JTextField[5];
 	JLabel[] Joinlabel = new JLabel[5];
 
+	//생성자
 	public How_much2() {
 		mainFrame();
-	}
-
-	public void connect() throws ClassNotFoundException, SQLException{
-		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			String URL = "jdbc:mysql://localhost/shopingdb";
-			con = DriverManager.getConnection(URL, "root", "1234");
-			System.out.println("성공이야");
-		}catch(Exception e) {
-			System.out.println("실패야");
-		}
-
 	}
 
 	// 메인화면
@@ -113,6 +115,8 @@ public class How_much2 extends CommonFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				select();
+				
+				//로그인
 				ID = IDtxtfield.getText();
 				PW = PWtxtfield.getText();
 
@@ -131,7 +135,8 @@ public class How_much2 extends CommonFrame {
 				}
 			}
 		});
-		// join버튼 누를 시 행동
+		
+		// join버튼 누를 시 행동(회원가입창으로 이동)
 		Join.addActionListener(new ActionListener() {
 
 			@Override
@@ -142,10 +147,11 @@ public class How_much2 extends CommonFrame {
 			}
 
 		});
+		
+		//https://intunknown.tistory.com/474
 		ImagePanel sidePanel = new ImagePanel(new ImageIcon("./image/Main.png").getImage());
 		mainFrame.add(sidePanel);
 		mainFrame.pack();
-
 		mainFrame.setLayout(null);
 		// 프레임 보이게 하기
 		mainFrame.setVisible(true);
@@ -165,28 +171,27 @@ public class How_much2 extends CommonFrame {
 		Dimension dim = new Dimension(840, 600);
 		secondFrame.setLocation(200, 400);
 		secondFrame.setPreferredSize(dim);
-
+		
 		// 컴퓨터 날짜
 		JLabel label = new JLabel(year + " " + month);
 		label.setBounds(450, 0, 200, 150);
 		label.setFont(new Font("굴림", Font.BOLD, 50));
 		secondFrame.add(label);
-
+		//콤보박스
 		String[] comboBox1= new String[]{"교통비","식비","여가생활","저축","의류","기타"};
 		JComboBox combo1=new JComboBox(comboBox1);
 		String[] comboBox2= {"카드","현금"};
 		JComboBox combo2=new JComboBox(comboBox2);
 
-		// 카테고리 콤보
+		// 테이블 https://reakwon.tistory.com/167
 		String[] header = { "날짜", "결제수단", "카테고리", "사용내역", "가격" };
 		String[][] contents = { };
 
 		model = new DefaultTableModel(contents,header);
-
 		JTable table = new JTable(model);
-		JScrollPane scrollpane = new JScrollPane(table);
-
+		
 		// 스크롤바
+		JScrollPane scrollpane = new JScrollPane(table);
 		scrollpane.setLocation(265, 250);
 		scrollpane.setSize(550, 300);
 
@@ -212,20 +217,42 @@ public class How_much2 extends CommonFrame {
 		Purchase_history.setBounds(550, 180, 120, 25);
 		Price.setFont(new Font("굴림", Font.BOLD, 15));
 		Price.setBounds(730, 180, 80, 25);
+		
 		// 버튼
-		Plus.setBounds(650, 220, 70, 20);
-		Minus.setBounds(740, 220, 70, 20);
+		Plus1.setBounds(650, 220, 70, 20);
+		Minus1.setBounds(740, 220, 70, 20);
 		input.setBounds(20, 100, 200,40);
-		statistics.setBounds(20, 300, 200, 40);
-		left.setBounds(400,57,37,37);
-		right.setBounds(650,57,37,37);
+		statistics1.setBounds(20, 300, 200, 40);
+		left1.setBounds(400,57,37,37);
+		right1.setBounds(650,57,37,37);
 
 		select();
-		Plus.addActionListener(new ActionListener() {
-			// 테이블
+		//전 달로 이동
+		left1.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				secondFrame.setVisible(false);
+				secondleftFrame();
+			}
+
+		});
+		//다음 달로 이동
+		right1.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				secondFrame.setVisible(false);
+				secondrightFrame();
+			}
+		});
+
+		//열 추가: 데이터들을 추가
+		Plus1.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {	 
+					//mysql책,https://data-make.tistory.com/542
 					updateSQL("INSERT INTO info(i_id,i_date,i_way,i_category,i_uselist,i_price) "
 							+ "VALUES (?,?,?,?,?,?)",
 							user,
@@ -248,8 +275,8 @@ public class How_much2 extends CommonFrame {
 			}
 		});
 		
-		// del 버튼
-		Minus.addActionListener(new ActionListener() {
+		// 열 삭제
+		Minus1.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
@@ -260,29 +287,18 @@ public class How_much2 extends CommonFrame {
 				}
 			}
 		});
-		left.addActionListener(new ActionListener() {
+		//통계화면으로 이동
+		statistics1.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				secondFrame.setVisible(false);
-				secondleftFrame();
-			}
-
-		});
-		right.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				secondFrame.setVisible(false);
-				secondrightFrame();
-			}
-		});
-		statistics.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				secondFrame.setVisible(false);
-				new GraphicsObjectEx();
+				try {
+					new GraphicsObjectEx();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 
 		});
@@ -298,12 +314,12 @@ public class How_much2 extends CommonFrame {
 		secondFrame.add(Purchase_history);
 		secondFrame.add(Price);
 		secondFrame.add(scrollpane, BorderLayout.CENTER);
-		secondFrame.add(Plus);
-		secondFrame.add(Minus);
+		secondFrame.add(Plus1);
+		secondFrame.add(Minus1);
 		secondFrame.add(input);
-		secondFrame.add(statistics);
-		secondFrame.add(left);
-		secondFrame.add(right);
+		secondFrame.add(statistics1);
+		secondFrame.add(left1);
+		secondFrame.add(right1);
 
 		ImagePanel sidePanel1 = new ImagePanel(new ImageIcon("./image/hehe.png").getImage());
 		sidePanel1.setSize(840, 640);
@@ -317,12 +333,19 @@ public class How_much2 extends CommonFrame {
 		secondFrame.setResizable(false);
 	}
 
-	JFrame secondleftFrame = new JFrame("Howmuch");
-	public void secondleftFrame() {
+	//전달 second화면
+	JFrame secondleftFrame = new JFrame("left");
+	public void secondleftFrame()  {
 		Dimension dim = new Dimension(840, 600);
 		secondleftFrame.setLocation(200, 400);
 		secondleftFrame.setPreferredSize(dim);
 
+		if(month>1)month--;
+		else {
+			month=12;
+			year--;
+		}
+		
 		JLabel label = new JLabel(year + " " + month);
 		label.setBounds(450, 0, 200, 150);
 		label.setFont(new Font("굴림", Font.BOLD, 50));
@@ -338,13 +361,12 @@ public class How_much2 extends CommonFrame {
 		String[][] contents = { };
 
 		model = new DefaultTableModel(contents,header);
-
 		JTable table = new JTable(model);
-		JScrollPane scrollpane = new JScrollPane(table);
 
 		// 스크롤바
-		scrollpane.setLocation(265, 250);
-		scrollpane.setSize(550, 300);
+		JScrollPane scrollpane1 = new JScrollPane(table);
+		scrollpane1.setLocation(265, 250);
+		scrollpane1.setSize(550, 300);
 
 		date.setFont(new Font("굴림", Font.BOLD, 14));
 		date.setBounds(280,130,50,50);
@@ -357,7 +379,7 @@ public class How_much2 extends CommonFrame {
 		price.setFont(new Font("굴림", Font.BOLD, 14));
 		price.setBounds(680,170,50,50);
 
-		JTextField Date = new JTextField(year+"-"+month+"-"+day);
+		JTextField Date = new JTextField();
 		Date.setFont(new Font("굴림", Font.BOLD, 15));
 		Date.setBounds(350, 140, 120, 25);
 		combo2.setFont(new Font("굴림", Font.BOLD, 15));
@@ -369,16 +391,62 @@ public class How_much2 extends CommonFrame {
 		Price.setFont(new Font("굴림", Font.BOLD, 15));
 		Price.setBounds(730, 180, 80, 25);
 		// 버튼
-		Plus.setBounds(650, 220, 70, 20);
-		Minus.setBounds(740, 220, 70, 20);
+		Plus2.setBounds(650, 220, 70, 20);
+		Minus2.setBounds(740, 220, 70, 20);
 		input.setBounds(20, 100, 200,40);
-		statistics.setBounds(20, 300, 200, 40);
-		left.setBounds(400,57,37,37);
-		right.setBounds(650,57,37,37);
+		statistics2.setBounds(20, 300, 200, 40);
+		left2.setBounds(400,57,37,37);
+		right2.setBounds(650,57,37,37);
 
+		left2.addActionListener((ActionListener) new ActionListener() {
 
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				if(month>1) {
+					month--;
+					label.setText(year + " " + month);
+				}
+				else if(month==1){
+					month = 12;
+					year--;
+					label.setText(year + " " + month);
+				}
+			}
+		});
+
+		right2.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				secondFrame.setVisible(false);
+				if(month < 12) {
+					month++;
+					label.setText(year + " " + month);
+				}
+				else {
+					month = 1;
+					year++;
+					label.setText(year + " " + month);
+				}
+				secondrightFrame.setVisible(true);
+			}
+		});
+
+		// del 버튼
+		Minus2.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				if (table.getSelectedRow() == -1) {
+					return;
+				} else {
+					model.removeRow(table.getSelectedRow());
+				}
+			}
+		});
+		
 		select();
-		Plus.addActionListener(new ActionListener() {
+		Plus2.addActionListener(new ActionListener() {
 			// 테이블
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -407,64 +475,18 @@ public class How_much2 extends CommonFrame {
 		});
 
 
-		left.addActionListener((ActionListener) new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				secondleftFrame.setVisible(false);
-				if(month>1) {
-					month--;
-					label.setText(year + " " + month);
-				}
-				else {
-					month = 12;
-					year--;
-					label.setText(year + " " + month);
-				}
-
-			}
-
-		});
-
-		right.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				secondleftFrame.setVisible(false);
-				if(month < 12) {
-					month++;
-					label.setText(year + " " + month);
-				}
-				else {
-					month = 1;
-					year++;
-					label.setText(year + " " + month);
-				}
-				select();
-				secondleftFrame.setVisible(true);
-				//secondFrame();
-				
-			}
-		});
-
-		// del 버튼
-		Minus.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				if (table.getSelectedRow() == -1) {
-					return;
-				} else {
-					model.removeRow(table.getSelectedRow());
-				}
-			}
-		});
-		statistics.addActionListener(new ActionListener() {
+	
+		statistics2.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				secondFrame.setVisible(false);
-				new GraphicsObjectEx();
+				try {
+					new GraphicsObjectEx();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 
 		});
@@ -479,13 +501,13 @@ public class How_much2 extends CommonFrame {
 		secondleftFrame.add(combo1);
 		secondleftFrame.add(Purchase_history);
 		secondleftFrame.add(Price);
-		secondleftFrame.add(scrollpane, BorderLayout.CENTER);
-		secondleftFrame.add(Plus);
-		secondleftFrame.add(Minus);
+		secondleftFrame.add(scrollpane1, BorderLayout.CENTER);
+		secondleftFrame.add(Plus2);
+		secondleftFrame.add(Minus2);
 		secondleftFrame.add(input);
-		secondleftFrame.add(statistics);
-		secondleftFrame.add(left);
-		secondleftFrame.add(right);
+		secondleftFrame.add(statistics2);
+		secondleftFrame.add(left2);
+		secondleftFrame.add(right2);
 
 		ImagePanel sidePanel1 = new ImagePanel(new ImageIcon("./image/hehe.png").getImage());
 		sidePanel1.setSize(840, 640);
@@ -498,15 +520,21 @@ public class How_much2 extends CommonFrame {
 		secondleftFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		secondleftFrame.setResizable(false);
 	}
-
-	//------------------------------------------------------------------------------
-	JFrame secondrightFrame = new JFrame("Howmuch");
+	//다음 달 화면
+	JFrame secondrightFrame = new JFrame("right");
 
 	public void secondrightFrame() {
 		Dimension dim = new Dimension(840, 600);
 		secondrightFrame.setLocation(200, 400);
 		secondrightFrame.setPreferredSize(dim);
 
+		if(month<12) {
+			month++;
+		}else {
+			month=1;
+			year++;
+		}
+	
 		JLabel label = new JLabel(year + " " + month);
 		label.setBounds(450, 0, 200, 150);
 		label.setFont(new Font("굴림", Font.BOLD, 50));
@@ -541,7 +569,7 @@ public class How_much2 extends CommonFrame {
 		price.setFont(new Font("굴림", Font.BOLD, 14));
 		price.setBounds(680,170,50,50);
 
-		JTextField Date = new JTextField(year+"-"+month+"-"+day);
+		JTextField Date = new JTextField();
 		Date.setFont(new Font("굴림", Font.BOLD, 15));
 		Date.setBounds(350, 140, 120, 25);
 		combo2.setFont(new Font("굴림", Font.BOLD, 15));
@@ -553,15 +581,52 @@ public class How_much2 extends CommonFrame {
 		Price.setFont(new Font("굴림", Font.BOLD, 15));
 		Price.setBounds(730, 180, 80, 25);
 		// 버튼
-		Plus.setBounds(650, 220, 70, 20);
-		Minus.setBounds(740, 220, 70, 20);
+		Plus3.setBounds(650, 220, 70, 20);
+		Minus3.setBounds(740, 220, 70, 20);
 		input.setBounds(20, 100, 200,40);
-		statistics.setBounds(20, 300, 200, 40);
-		left.setBounds(400,57,37,37);
-		right.setBounds(650,57,37,37);
+		statistics3.setBounds(20, 300, 200, 40);
+		left3.setBounds(400,57,37,37);
+		right3.setBounds(650,57,37,37);
 
+		left3.addActionListener((ActionListener) new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				secondleftFrame.setVisible(false);
+				if(month>1) {
+					month--;
+					label.setText(year + " " + month);
+				}
+				else {
+					month = 12;
+					year--;
+					label.setText(year + " " + month);
+				}
+				select();
+				secondrightFrame.setVisible(true);
+			}
+		});
+
+		right3.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				secondleftFrame.setVisible(false);
+				if(month < 12) {
+					month++;
+					label.setText(year + " " + month);
+				}
+				else {
+					month = 1;
+					year++;
+					label.setText(year + " " + month);
+				}
+				select();
+				secondrightFrame.setVisible(true);
+			}
+		});
+		
 		select();
-		Plus.addActionListener(new ActionListener() {
+		Plus3.addActionListener(new ActionListener() {
 			// 테이블
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -589,46 +654,9 @@ public class How_much2 extends CommonFrame {
 			}
 		});
 
-		left.addActionListener((ActionListener) new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				secondrightFrame.setVisible(false);
-				if(month>1) {
-					month--;
-					label.setText(year + " " + month);
-				}
-				else {
-					month = 12;
-					year--;
-					label.setText(year + " " + month);
-				}
-				select();
-			}
-
-		});
-
-		right.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				secondleftFrame.setVisible(false);
-				if(month < 12) {
-					month++;
-					label.setText(year + " " + month);
-				}
-				else {
-					month = 1;
-					year++;
-					label.setText(year + " " + month);
-				}
-				select();
-				secondrightFrame.setVisible(true);
-				
-			}
-		});
+		
 		// del 버튼
-		Minus.addActionListener(new ActionListener() {
+		Minus3.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
@@ -639,12 +667,17 @@ public class How_much2 extends CommonFrame {
 				}
 			}
 		});
-		statistics.addActionListener(new ActionListener() {
+		statistics3.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				secondrightFrame.setVisible(false);
-				new GraphicsObjectEx();
+				try {
+					new GraphicsObjectEx();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 
 		});
@@ -660,12 +693,12 @@ public class How_much2 extends CommonFrame {
 		secondrightFrame.add(Purchase_history);
 		secondrightFrame.add(Price);
 		secondrightFrame.add(scrollpane, BorderLayout.CENTER);
-		secondrightFrame.add(Plus);
-		secondrightFrame.add(Minus);
+		secondrightFrame.add(Plus3);
+		secondrightFrame.add(Minus3);
 		secondrightFrame.add(input);
-		secondrightFrame.add(statistics);
-		secondrightFrame.add(left);
-		secondrightFrame.add(right);
+		secondrightFrame.add(statistics3);
+		secondrightFrame.add(left3);
+		secondrightFrame.add(right3);
 
 		ImagePanel sidePanel1 = new ImagePanel(new ImageIcon("./image/hehe.png").getImage());
 		sidePanel1.setSize(840, 640);
@@ -691,19 +724,16 @@ public class How_much2 extends CommonFrame {
 			Joinlabel[i].setBounds(270, 200 + i * 50, 200, 30);
 			joinFrame.add(Joinlabel[i]);
 		}
-
 		for (int i = 0; i < JointextField.length; i++) {
 			JointextField[i] = new JTextField();
 			JointextField[i].setFont(new Font("Arial Black", Font.BOLD, 15));
 			JointextField[i].setBounds(400, 200 + i * 50, 200, 30);
 			joinFrame.add(JointextField[i]);
 		}
-
 		new_join.setBounds(330, 480, 90, 30);
 		cancel.setBounds(430, 480, 90, 30);
 		joinFrame.add(new_join);
 		joinFrame.add(cancel);
-
 		new_join.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent T) {
@@ -718,24 +748,19 @@ public class How_much2 extends CommonFrame {
 							JointextField[4].getText());
 
 					JOptionPane.showMessageDialog(null, "회원가입을 축하합니다!");
-
 				}catch(Exception ex) { 
-					JOptionPane.showMessageDialog(null,"회원가입에 실패하였습니다"); }				
-
+					JOptionPane.showMessageDialog(null,"회원가입에 실패하였습니다"); 
+				}				
 				joinFrame.setVisible(false);
 				new How_much2();
-
 			}
 		});
 		cancel.addActionListener(new ActionListener() {
-
-			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				joinFrame.setVisible(false);
 				new How_much2();
 			}
-
 		});
 
 		ImagePanel sidePanel = new ImagePanel(new ImageIcon("./image/join.png").getImage());
@@ -747,7 +772,7 @@ public class How_much2 extends CommonFrame {
 		joinFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		joinFrame.setResizable(false);
 	}
-	//----------------------------------------------------------------------------------여기까지가 회원가입창
+	//----------------------------------------------------------------------------------------------여기까지가 회원가입창
 	//디비 출력 
 	public void select() { 
 		try(var rs=getResulSet("SELECT * FROM info  WHERE i_id = ? AND YEAR(i_date) = ? AND MONTH(i_date) = ?",user, year, month)){
@@ -764,6 +789,7 @@ public class How_much2 extends CommonFrame {
 			System.out.println("실행성공"); 
 		} catch(Exception e) { e.printStackTrace(); } }
 
+	//main
 	public static void main(String[] args) {
 		new How_much2();
 	}
